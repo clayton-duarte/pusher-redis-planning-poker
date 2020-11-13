@@ -1,0 +1,24 @@
+{
+  "name": "with-emotion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "Thomas Greco",
+  "license": "MIT",
+  "devDependencies": {
+    "@emotion/babel-preset-css-prop": "10.0.27"
+  },
+  "dependencies": {
+    "@emotion/core": "10.0.35",
+    "@emotion/styled": "10.0.27",
+    "next": "latest",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  }
+}
