@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { NextPage } from "next";
 
-import { createRoomId } from "../libs/room";
+import { useRoom } from "../providers/room";
 
 const Text = styled.p`
   margin: 0;
@@ -14,14 +13,12 @@ const Button = styled.button`
 `;
 
 const HomePage: NextPage = () => {
-  const router = useRouter();
+  const { createRoom } = useRoom();
 
   return (
     <>
       <Text>Cool Styles</Text>
-      <Button onClick={() => router.push(`/${createRoomId()}`)}>
-        create room
-      </Button>
+      <Button onClick={createRoom}>create room</Button>
     </>
   );
 };
