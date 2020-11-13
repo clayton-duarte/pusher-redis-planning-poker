@@ -8,12 +8,17 @@ const Text = styled.p`
   margin: 0;
 `;
 
+const Button = styled.button`
+  margin: 0;
+`;
+
 const RoomPage: NextPage = () => {
-  const { roomId } = useRoom();
+  const { currentRoom, putRoom } = useRoom();
 
   return (
     <>
-      <Text>Room: {roomId}</Text>
+      <Text>Room: {currentRoom}</Text>
+      <Button onClick={() => putRoom({ id: "bla" })}>update</Button>
     </>
   );
 };

@@ -1,26 +1,25 @@
 import { NextApiHandler } from "next";
+import Pusher from "pusher";
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL, {
-  showFriendlyErrorStack: true,
+const pusher = new Pusher({
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  appId: process.env.PUSHER_APPID,
+  cluster: "us2",
 });
+
+const redis = new Redis(process.env.REDIS_URL);
 
 const getController: NextApiHandler = async (req, res) => {
   const roomId = String(req.query.room);
 
-  const pipelineResponse = await redis.pipeline().get(roomId).exec();
-  const [[getErr, getRes]] = pipelineResponse;
+  const getRes = await redis.get(roomId);
 
-  if (getErr) {
-    return res.status(500).json(getErr);
-  }
+  const parsedGetResponse = JSON.parse(getRes);
+  res.json(parsedGetResponse);
 
-  if (getRes) {
-    const parsedGetResponse = JSON.parse(getRes);
-    res.status(200).json(parsedGetResponse);
-  } else {
-    res.status(404).json({});
-  }
+  // TODO > error handling
 };
 
 const putController: NextApiHandler = async (req, res) => {
@@ -28,24 +27,14 @@ const putController: NextApiHandler = async (req, res) => {
   const body = req.body;
 
   const stringifiedBody = JSON.stringify(body);
-  const pipelineResponse = await redis
-    .pipeline()
-    .set(roomId, stringifiedBody)
-    .get(roomId)
-    .exec();
+  const setRes = await redis.set(roomId, stringifiedBody);
 
-  const [[errSet, resSet], [errGet, resGet]] = pipelineResponse;
+  pusher.trigger(roomId, "update", {
+    message: "update",
+  });
 
-  if (errSet || errGet) {
-    return res.status(500).json(errSet || errGet);
-  }
-
-  if (resSet && resGet) {
-    const parsedPostResponse = JSON.parse(resGet);
-    return res.status(200).send(parsedPostResponse);
-  }
-
-  return res.status(404).json({});
+  return res.send(setRes);
+  // TODO > error handling
 };
 
 const handler: NextApiHandler = async (req, res) => {
