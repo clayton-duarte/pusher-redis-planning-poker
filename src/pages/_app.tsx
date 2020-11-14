@@ -3,12 +3,15 @@ import { AppProps } from "next/app";
 
 import ThemeProvider from "../providers/theme";
 import RoomProvider from "../providers/room";
+import UserProvider from "../providers/user";
 
 const App: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => (
   <ThemeProvider>
-    <RoomProvider>
-      <Page {...pageProps} />
-    </RoomProvider>
+    <UserProvider>
+      <RoomProvider>
+        <Page {...pageProps} />
+      </RoomProvider>
+    </UserProvider>
   </ThemeProvider>
 );
 

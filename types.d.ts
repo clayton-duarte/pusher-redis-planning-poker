@@ -1,4 +1,7 @@
 import "@emotion/react";
+import "next";
+
+import { Session } from "next-iron-session";
 
 declare module "@emotion/react" {
   export interface Theme {
@@ -9,5 +12,18 @@ declare module "@emotion/react" {
     text: string;
     bg: string;
     size: string;
+  }
+}
+
+declare module "next" {
+  export interface NextApiRequest {
+    session: Session;
+  }
+}
+
+declare global {
+  export interface Room {
+    host?: string;
+    id?: string;
   }
 }
