@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "tsc": "yarn tsc"
   },
   "dependencies": {
     "@emotion/react": "^11.0.0",
