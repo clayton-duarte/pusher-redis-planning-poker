@@ -23,6 +23,7 @@ declare module "next" {
 
 declare global {
   export interface Room {
+    members?: string[];
     host?: string;
     id?: string;
   }

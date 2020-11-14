@@ -38,7 +38,12 @@ const roomController: NextApiHandler = (req, res) => {
   };
 
   const postController = async (): Promise<void> => {
-    const newRoom = { id: createRoomId(), host: user };
+    const newRoom: Room = {
+      id: createRoomId(),
+      members: [user],
+      host: user,
+    };
+
     const stringifiedBody = JSON.stringify(newRoom);
     await redis.set(newRoom.id, stringifiedBody);
 

@@ -20,9 +20,12 @@ const RoomPage: NextPage = () => {
   return (
     <>
       <Text>Room: {currentRoom}</Text>
-      <Text>
-        User: {user} {user === room?.host && "(host)"}
-      </Text>
+      {room?.members?.map((member) => (
+        <Text>
+          User: {user} {user === room?.host && "(host)"}
+        </Text>
+      ))}
+
       {/* <Button onClick={() => putRoom({ id: "bla", host: user })}>update</Button> */}
     </>
   );

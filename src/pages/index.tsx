@@ -19,7 +19,7 @@ const HomePage: NextPage = () => {
 
   return (
     <>
-      <Text>Hey {user}!</Text>
+      <Text>Hello {user}!</Text>
       <Button onClick={createRoom}>create room</Button>
     </>
   );

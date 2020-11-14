@@ -5,27 +5,34 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import Axios from "axios";
 import { useRouter } from "next/router";
+import Axios from "axios";
 
 const UserCtx = createContext(null);
 
 export const useUser = () => {
-  const [user, setUser] = useContext(UserCtx);
+  const [user] = useContext(UserCtx);
   const router = useRouter();
 
   const createUser = async (username): Promise<void> => {
-    const { data } = await Axios.post<string>("/api/user", { username });
-    setUser(data);
+    await Axios.post<string>("/api/user", { username });
     router.back();
   };
+
+  return { user, createUser };
+};
+
+const Provider: FunctionComponent = ({ children }) => {
+  const [user, setUser] = useState<string>("");
+  const router = useRouter();
 
   const getUser = async (): Promise<void> => {
     const { data } = await Axios.get<string>("/api/user");
     if (data) {
       return setUser(data);
+    } else {
+      router.push("/user");
     }
-    router.push("/user");
   };
 
   useEffect(() => {
@@ -33,13 +40,8 @@ export const useUser = () => {
       getUser();
     }
   }, [user]);
-
-  return { user, getUser, createUser };
-};
-
-const Provider: FunctionComponent = ({ children }) => {
   return (
-    <UserCtx.Provider value={useState<string>("")}>{children}</UserCtx.Provider>
+    <UserCtx.Provider value={[user, setUser]}>{children}</UserCtx.Provider>
   );
 };
 
