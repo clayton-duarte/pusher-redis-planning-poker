@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { useUser } from "../providers/user";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import Main from "../components/Main";
 
 const UserPage: NextPage = () => {
   const [user, setUser] = useState<string>("");
@@ -21,10 +22,10 @@ const UserPage: NextPage = () => {
   };
 
   return (
-    <>
+    <Main>
       <Input onChange={handelChange} placeholder="username" />
       <Button onClick={handleClick}>submit</Button>
-    </>
+    </Main>
   );
 };
 

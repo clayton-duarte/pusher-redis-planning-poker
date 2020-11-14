@@ -6,6 +6,8 @@ import ParticipantList from "../components/ParticipantList";
 import HostTools from "../components/HostTools";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
+import Sidebar from "../components/Sidebar";
+import Main from "../components/Main";
 import Text from "../components/Text";
 
 const RoomPage: NextPage = () => {
@@ -16,9 +18,12 @@ const RoomPage: NextPage = () => {
 
   return (
     <>
-      <Text primary>Room: {room?.id}</Text>
-      {isHost ? <HostTools /> : <ParticipantTools />}
-      <ParticipantList />
+      <Main>
+        <Text primary>User: {user?.name}</Text>
+        {isHost ? <HostTools /> : <ParticipantTools />}
+        <ParticipantList />
+      </Main>
+      <Sidebar />
     </>
   );
 };

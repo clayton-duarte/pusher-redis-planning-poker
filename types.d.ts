@@ -31,6 +31,7 @@ declare global {
   }
 
   export interface Room {
+    reveal?: boolean;
     members: User[];
     resets: number;
     host: User;

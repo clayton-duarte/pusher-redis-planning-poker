@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEvent } from "react";
+import React, { FunctionComponent } from "react";
 import styled from "@emotion/styled";
 
 import { useRoom } from "../providers/room";
@@ -29,20 +29,38 @@ const ParticipantList: FunctionComponent = () => {
   const { room } = useRoom();
   const { user } = useUser();
 
+  if (!room?.members?.length) return null;
+
   return (
     <>
-      <Text primary>Participants:</Text>
+      <Text primary>Participants</Text>
       <List>
-        {room?.members?.map(({ name: memberName, id: memberId, lastVote }) => (
-          <ListItem key={memberId}>
-            <Text>
-              {memberName}
-              {memberId === user?.id && <span title="you"> ✋</span>}
-              {memberId === room?.host?.id && <span title="host"> 🕹️</span>}
-            </Text>
-            <Text>{lastVote || "?"}</Text>
-          </ListItem>
-        ))}
+        {room?.members?.map(({ name: memberName, id: memberId, lastVote }) => {
+          const isHost = memberId === room?.host?.id;
+          const isMe = memberId === user?.id;
+
+          if (isHost) return null;
+
+          const renderVote = () => {
+            const canViewVote = isMe || room?.reveal;
+            const voted = Boolean(lastVote);
+            if (voted) {
+              if (canViewVote) return <Text>{lastVote}</Text>;
+              return <Text>👍</Text>;
+            }
+            return <Text>⏳</Text>;
+          };
+
+          return (
+            <ListItem key={memberId}>
+              <Text>
+                {memberName}
+                {isMe && <span title="you"> ✋</span>}
+              </Text>
+              {renderVote()}
+            </ListItem>
+          );
+        })}
       </List>
     </>
   );

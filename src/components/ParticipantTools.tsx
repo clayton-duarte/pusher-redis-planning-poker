@@ -2,6 +2,7 @@ import React, { FunctionComponent, MouseEvent } from "react";
 import styled from "@emotion/styled";
 
 import { useRoom } from "../providers/room";
+import { useUser } from "../providers/user";
 import { points } from "../enums";
 import Button from "./Button";
 
@@ -21,7 +22,12 @@ const Card = styled(Button)`
 `;
 
 const ParticipantTools: FunctionComponent = () => {
-  const { sendVote } = useRoom();
+  const { room, sendVote } = useRoom();
+  const { user } = useUser();
+
+  const alreadyVoted = Boolean(
+    room?.members?.find((member) => member.id === user?.id)?.lastVote
+  );
 
   const handleClick = (point: Points) => (e: MouseEvent) => {
     e.preventDefault();
@@ -32,7 +38,11 @@ const ParticipantTools: FunctionComponent = () => {
     <>
       <CardWrapper>
         {points.map((point) => (
-          <Card key={`card-${point}`} onClick={handleClick(point)}>
+          <Card
+            onClick={handleClick(point)}
+            disabled={alreadyVoted}
+            key={`card-${point}`}
+          >
             {point}
           </Card>
         ))}

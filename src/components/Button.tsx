@@ -18,4 +18,8 @@ export default styled.button`
     background: ${(props) => props.theme.primary};
     color: ${(props) => props.theme.bg};
   }
+  &:disabled {
+    filter: grayscale(100%);
+    pointer-events: none;
+  }
 `;

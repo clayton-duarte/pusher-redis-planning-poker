@@ -1,21 +1,36 @@
 import React, { FunctionComponent, MouseEvent } from "react";
-// import styled from "@emotion/styled";
+import styled from "@emotion/styled";
 
 import { useRoom } from "../providers/room";
 import Button from "./Button";
 
-const HostTools: FunctionComponent = () => {
-  const { resetVotes } = useRoom();
+const Wrapper = styled.div`
+  grid-template-columns: auto auto;
+  display: grid;
+  gap: 1rem;
+`;
 
-  const handleClick = (e: MouseEvent) => {
+const HostTools: FunctionComponent = () => {
+  const { room, resetVotes, toggleViewVotes } = useRoom();
+  const isVisible = room?.reveal;
+
+  const handleClickReset = (e: MouseEvent) => {
     e.preventDefault();
     resetVotes();
   };
 
+  const handleClickReview = (e: MouseEvent) => {
+    e.preventDefault();
+    toggleViewVotes(!isVisible);
+  };
+
   return (
-    <>
-      <Button onClick={handleClick}>reset</Button>
-    </>
+    <Wrapper>
+      <Button onClick={handleClickReview}>
+        {isVisible ? "hide" : "reveal"}
+      </Button>
+      <Button onClick={handleClickReset}>reset</Button>
+    </Wrapper>
   );
 };
 

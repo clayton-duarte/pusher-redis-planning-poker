@@ -1,12 +1,5 @@
 import React, { FunctionComponent } from "react";
 import { Global, ThemeProvider, Theme, css } from "@emotion/react";
-import styled from "@emotion/styled";
-
-const PageTemplate = styled.main`
-  display: grid;
-  padding: 1rem;
-  gap: 1rem;
-`;
 
 const Provider: FunctionComponent = ({ children }) => {
   const theme: Theme = {
@@ -21,7 +14,7 @@ const Provider: FunctionComponent = ({ children }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <PageTemplate>{children}</PageTemplate>
+      {children}
       <Global
         styles={css`
           html,

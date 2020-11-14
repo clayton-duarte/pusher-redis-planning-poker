@@ -78,11 +78,28 @@ export const useRoom = () => {
       ...room,
       members: updatedMembers,
       resets: room.resets + 1,
+      reveal: false,
     };
     await putRoom(newRoom);
   };
 
-  return { room, createRoom, putRoom, sendVote, resetVotes, leaveRoom };
+  const toggleViewVotes = async (reveal: boolean) => {
+    const newRoom: Room = {
+      ...room,
+      reveal,
+    };
+    await putRoom(newRoom);
+  };
+
+  return {
+    toggleViewVotes,
+    createRoom,
+    resetVotes,
+    leaveRoom,
+    sendVote,
+    putRoom,
+    room,
+  };
 };
 
 const Provider: FunctionComponent = ({ children }) => {
