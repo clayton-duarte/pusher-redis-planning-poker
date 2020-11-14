@@ -4,30 +4,37 @@ import React, {
   useContext,
   useEffect,
   useState,
+  Dispatch,
 } from "react";
 import { useRouter } from "next/router";
 import Axios from "axios";
 
-const UserCtx = createContext(null);
+const UserCtx = createContext<[User, Dispatch<User>]>(null);
 
 export const useUser = () => {
-  const [user] = useContext(UserCtx);
+  const [user, setUser] = useContext(UserCtx);
   const router = useRouter();
 
   const createUser = async (username): Promise<void> => {
-    await Axios.post<string>("/api/user", { username });
+    const { data } = await Axios.post<User>("/api/user", { username });
+    setUser(data);
     router.back();
   };
 
-  return { user, createUser };
+  const deleteUser = async (): Promise<void> => {
+    await Axios.delete<"OK">("/api/user");
+    setUser(null);
+  };
+
+  return { user, createUser, deleteUser };
 };
 
 const Provider: FunctionComponent = ({ children }) => {
-  const [user, setUser] = useState<string>("");
+  const [user, setUser] = useState<User>();
   const router = useRouter();
 
   const getUser = async (): Promise<void> => {
-    const { data } = await Axios.get<string>("/api/user");
+    const { data } = await Axios.get<User>("/api/user");
     if (data) {
       return setUser(data);
     } else {
@@ -40,6 +47,7 @@ const Provider: FunctionComponent = ({ children }) => {
       getUser();
     }
   }, [user]);
+
   return (
     <UserCtx.Provider value={[user, setUser]}>{children}</UserCtx.Provider>
   );

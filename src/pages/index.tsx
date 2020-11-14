@@ -6,6 +6,7 @@ import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 
 const Text = styled.p`
+  text-transform: capitalize;
   margin: 0;
 `;
 
@@ -14,13 +15,14 @@ const Button = styled.button`
 `;
 
 const HomePage: NextPage = () => {
+  const { user, deleteUser } = useUser();
   const { createRoom } = useRoom();
-  const { user } = useUser();
 
   return (
     <>
-      <Text>Hello {user}!</Text>
+      <Text>Hello {user?.name}!</Text>
       <Button onClick={createRoom}>create room</Button>
+      <Button onClick={deleteUser}>logout</Button>
     </>
   );
 };

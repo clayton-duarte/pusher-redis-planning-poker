@@ -1,25 +1,35 @@
 import { NextApiHandler } from "next";
 
 import { HttpMethods } from "../enums";
+import { createID } from "../helpers";
 
-const userController: NextApiHandler = (req, res) => {
+const userController: NextApiHandler<User> = (req, res) => {
   // CONTROLLERS
   const getController = async (): Promise<void> => {
-    const user = req.session.get("user");
-    res.json(user || "");
+    const user: User = req.session.get("user");
+    if (user) {
+      res.json(user);
+    } else {
+      res.end();
+    }
   };
 
   const postController = async (): Promise<void> => {
-    const username = req.body.username;
+    const username: string = req.body.username;
 
-    req.session.set("user", username);
+    const newUser: User = {
+      name: username,
+      id: createID(),
+    };
+
+    req.session.set("user", newUser);
     await req.session.save();
-    res.send(username);
+    res.send(newUser);
   };
 
   const deleteController = async (): Promise<void> => {
     req.session.destroy();
-    res.send("OK");
+    res.end();
   };
 
   switch (req.method) {
@@ -30,7 +40,7 @@ const userController: NextApiHandler = (req, res) => {
     case HttpMethods.DELETE:
       return deleteController();
     default:
-      return res.status(405).send("Method Not Allowed");
+      return res.status(405).end();
   }
 };
 

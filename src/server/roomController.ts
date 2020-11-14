@@ -3,12 +3,7 @@ import Pusher from "pusher";
 import Redis from "ioredis";
 
 import { HttpMethods } from "../enums";
-
-const createRoomId = (): string => {
-  const timestamp = new Date().getTime().toString(16);
-  const random = Math.random().toString(16).slice(2);
-  return `${timestamp}-${random}`;
-};
+import { createID } from "../helpers";
 
 const redis = new Redis(process.env.REDIS_URL);
 
@@ -19,19 +14,19 @@ const pusher = new Pusher({
   cluster: "us2",
 });
 
-const roomController: NextApiHandler = (req, res) => {
+const roomController: NextApiHandler<Room> = (req, res) => {
   // SETUP
+  const user: User = req.session.get("user");
 
-  const user = req.session.get("user");
   if (!user) {
-    return res.status(401).send("Unauthorized");
+    return res.status(401).end();
   }
 
   // CONTROLLERS
   const getController = async (): Promise<void> => {
     const roomId = String(req.query.room);
     const getRes = await redis.get(roomId);
-    const parsedResponse = JSON.parse(getRes);
+    const parsedResponse: Room = JSON.parse(getRes);
 
     res.json(parsedResponse);
     // TODO > error handling
@@ -39,13 +34,13 @@ const roomController: NextApiHandler = (req, res) => {
 
   const postController = async (): Promise<void> => {
     const newRoom: Room = {
-      id: createRoomId(),
       members: [user],
+      id: createID(),
       host: user,
     };
 
-    const stringifiedBody = JSON.stringify(newRoom);
-    await redis.set(newRoom.id, stringifiedBody);
+    const stringifiedRoom = JSON.stringify(newRoom);
+    await redis.set(newRoom.id, stringifiedRoom);
 
     res.send(newRoom);
     // TODO > error handling
@@ -53,10 +48,10 @@ const roomController: NextApiHandler = (req, res) => {
 
   const putController = async (): Promise<void> => {
     const roomId = String(req.query.room);
-    const room = req.body;
+    const room: Room = req.body;
 
-    const stringifiedBody = JSON.stringify(room);
-    await redis.set(roomId, stringifiedBody);
+    const stringifiedRoom = JSON.stringify(room);
+    await redis.set(roomId, stringifiedRoom);
 
     pusher.trigger(roomId, "update", {
       message: "update",
@@ -74,7 +69,7 @@ const roomController: NextApiHandler = (req, res) => {
     case HttpMethods.PUT:
       return putController();
     default:
-      return res.status(405).send("Method Not Allowed");
+      return res.status(405).end();
   }
 };
 

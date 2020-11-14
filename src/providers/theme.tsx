@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 const PageTemplate = styled.main`
   display: grid;
   padding: 1rem;
+  gap: 1rem;
 `;
 
 const Provider: FunctionComponent = ({ children }) => {

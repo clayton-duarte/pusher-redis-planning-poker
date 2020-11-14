@@ -5,28 +5,49 @@ import { NextPage } from "next";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 
-const Text = styled.p`
+interface TextProps {
+  primary?: boolean;
+  secondary?: boolean;
+  bold?: boolean;
+}
+
+const Text = styled.p<TextProps>`
+  color: ${({ theme, primary, secondary }) =>
+    primary ? theme.primary : secondary ? theme.secondary : "inherit"};
+  font-weight: ${({ bold }) => (bold ? 700 : 400)};
+  text-transform: capitalize;
+  position: relative;
   margin: 0;
 `;
 
-const Button = styled.button`
+const List = styled.ul`
+  margin: 0;
+`;
+
+const ListItem = styled.li`
+  text-transform: capitalize;
+  list-style-type: none;
+  position: relative;
   margin: 0;
 `;
 
 const RoomPage: NextPage = () => {
-  const { currentRoom, room, putRoom } = useRoom();
+  const { room } = useRoom();
   const { user } = useUser();
 
   return (
     <>
-      <Text>Room: {currentRoom}</Text>
-      {room?.members?.map((member) => (
-        <Text>
-          User: {user} {user === room?.host && "(host)"}
-        </Text>
-      ))}
-
-      {/* <Button onClick={() => putRoom({ id: "bla", host: user })}>update</Button> */}
+      <Text primary>Room: {room?.id}</Text>
+      <Text primary>Participants:</Text>
+      <List>
+        {room?.members?.map(({ name: memberName, id: memberId }) => (
+          <ListItem key={memberId}>
+            {memberName}
+            {memberId === user?.id && <span title="you"> ✋</span>}
+            {memberId === room?.host?.id && <span title="host"> 🕹️</span>}
+          </ListItem>
+        ))}
+      </List>
     </>
   );
 };

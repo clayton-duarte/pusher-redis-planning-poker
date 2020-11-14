@@ -10,6 +10,8 @@ import Axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 
+import { useUser } from "./user";
+
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
   cluster: "us2",
 });
@@ -23,6 +25,7 @@ const RoomCtx = createContext<[Room, Dispatch<Room>]>(null);
 
 export const useRoom = () => {
   // SETUP
+  const { user, deleteUser } = useUser();
   const [room] = useContext(RoomCtx);
   const router = useRouter();
 
@@ -46,11 +49,24 @@ export const useRoom = () => {
     }
   };
 
-  return { room, currentRoom, createRoom, putRoom };
+  const leaveRoom = async (): Promise<void> => {
+    const membersWithoutUser = room.members.filter(
+      (member) => member.id !== user.id
+    );
+
+    await Axios.put<Room>(`/api/${currentRoom}`, {
+      ...room,
+      members: membersWithoutUser,
+    });
+    await deleteUser();
+  };
+
+  return { room, createRoom, putRoom, leaveRoom };
 };
 
 const Provider: FunctionComponent = ({ children }) => {
-  const [room, setRoom] = useState<Room>({});
+  const [room, setRoom] = useState<Room>();
+  const { user } = useUser();
   const router = useRouter();
 
   const currentRoom = String(router.query.room || "");
@@ -60,6 +76,19 @@ const Provider: FunctionComponent = ({ children }) => {
     channel.bind("update", () => {
       getRoom(currentRoom);
     });
+  };
+
+  const enterIntoRoom = async (): Promise<void> => {
+    try {
+      const membersWithUser = room.members.concat(user);
+
+      await Axios.put<Room>(`/api/${currentRoom}`, {
+        ...room,
+        members: membersWithUser,
+      });
+    } catch (err) {
+      handleAxiosError(err);
+    }
   };
 
   const getRoom = async (roomId): Promise<void> => {
@@ -77,6 +106,18 @@ const Provider: FunctionComponent = ({ children }) => {
       subscribeToRoom();
     }
   }, [currentRoom]);
+
+  useEffect(() => {
+    if (room && user) {
+      const isInTheRoom = room?.members?.find(
+        ({ id: memberId }) => memberId === user.id
+      );
+
+      if (!isInTheRoom) {
+        enterIntoRoom();
+      }
+    }
+  }, [room, user]);
 
   return (
     <RoomCtx.Provider value={[room, setRoom]}>{children}</RoomCtx.Provider>
