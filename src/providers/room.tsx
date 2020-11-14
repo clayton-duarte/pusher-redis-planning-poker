@@ -61,7 +61,28 @@ export const useRoom = () => {
     await deleteUser();
   };
 
-  return { room, createRoom, putRoom, leaveRoom };
+  const sendVote = async (point: Points) => {
+    const updatedMembers = room.members.map((member) => {
+      if (member.id === user.id) return { ...member, lastVote: point };
+      return member;
+    });
+    const newRoom: Room = { ...room, members: updatedMembers };
+    await putRoom(newRoom);
+  };
+
+  const resetVotes = async () => {
+    const updatedMembers = room.members.map((member) => {
+      return { ...member, lastVote: null };
+    });
+    const newRoom: Room = {
+      ...room,
+      members: updatedMembers,
+      resets: room.resets + 1,
+    };
+    await putRoom(newRoom);
+  };
+
+  return { room, createRoom, putRoom, sendVote, resetVotes, leaveRoom };
 };
 
 const Provider: FunctionComponent = ({ children }) => {

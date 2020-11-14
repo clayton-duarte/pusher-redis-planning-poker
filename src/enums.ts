@@ -9,3 +9,16 @@ export enum HttpMethods {
   TRACE = "TRACE",
   PATCH = "PATCH",
 }
+
+export const points: Points[] = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "5",
+  "8",
+  "13",
+  "20",
+  "40",
+  "100",
+];

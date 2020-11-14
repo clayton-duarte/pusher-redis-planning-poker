@@ -34,9 +34,10 @@ const roomController: NextApiHandler<Room> = (req, res) => {
 
   const postController = async (): Promise<void> => {
     const newRoom: Room = {
-      members: [user],
       id: createID(),
+      members: [user],
       host: user,
+      resets: 0,
     };
 
     const stringifiedRoom = JSON.stringify(newRoom);

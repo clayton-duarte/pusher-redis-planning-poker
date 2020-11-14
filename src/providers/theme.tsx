@@ -11,7 +11,7 @@ const PageTemplate = styled.main`
 const Provider: FunctionComponent = ({ children }) => {
   const theme: Theme = {
     primary: "TEAL",
-    secondary: "LIGHTSEAGREEN",
+    secondary: "PALETURQUOISE",
     success: "SEAGREEN",
     error: "CRIMSON",
     text: "DARKSLATEGRAY",
