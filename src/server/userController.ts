@@ -2,23 +2,19 @@ import { NextApiHandler } from "next";
 
 import { HttpMethods } from "../enums";
 
-const roomController: NextApiHandler = (req, res) => {
+const userController: NextApiHandler = (req, res) => {
   // CONTROLLERS
   const getController = async (): Promise<void> => {
     const user = req.session.get("user");
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json(user);
-    }
+    res.json(user || "");
   };
 
   const postController = async (): Promise<void> => {
-    const body = req.body;
+    const username = req.body.username;
 
-    req.session.set("user", body);
+    req.session.set("user", username);
     await req.session.save();
-    res.send("OK");
+    res.send(username);
   };
 
   const deleteController = async (): Promise<void> => {
@@ -38,4 +34,4 @@ const roomController: NextApiHandler = (req, res) => {
   }
 };
 
-export default roomController;
+export default userController;

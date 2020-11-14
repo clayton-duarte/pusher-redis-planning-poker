@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { NextPage } from "next";
 
 import { useRoom } from "../providers/room";
+import { useUser } from "../providers/user";
 
 const Text = styled.p`
   margin: 0;
@@ -13,12 +14,16 @@ const Button = styled.button`
 `;
 
 const RoomPage: NextPage = () => {
-  const { currentRoom, putRoom } = useRoom();
+  const { currentRoom, room, putRoom } = useRoom();
+  const { user } = useUser();
 
   return (
     <>
       <Text>Room: {currentRoom}</Text>
-      <Button onClick={() => putRoom({ id: "bla" })}>update</Button>
+      <Text>
+        User: {user} {user === room?.host && "(host)"}
+      </Text>
+      {/* <Button onClick={() => putRoom({ id: "bla", host: user })}>update</Button> */}
     </>
   );
 };

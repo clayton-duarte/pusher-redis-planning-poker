@@ -21,7 +21,6 @@ const pusher = new Pusher({
 
 const roomController: NextApiHandler = (req, res) => {
   // SETUP
-  const roomId = String(req.query.room);
 
   const user = req.session.get("user");
   if (!user) {
@@ -30,9 +29,10 @@ const roomController: NextApiHandler = (req, res) => {
 
   // CONTROLLERS
   const getController = async (): Promise<void> => {
+    const roomId = String(req.query.room);
     const getRes = await redis.get(roomId);
-
     const parsedResponse = JSON.parse(getRes);
+
     res.json(parsedResponse);
     // TODO > error handling
   };
@@ -40,13 +40,14 @@ const roomController: NextApiHandler = (req, res) => {
   const postController = async (): Promise<void> => {
     const newRoom = { id: createRoomId(), host: user };
     const stringifiedBody = JSON.stringify(newRoom);
-    await redis.set(roomId, stringifiedBody);
+    await redis.set(newRoom.id, stringifiedBody);
 
     res.send(newRoom);
     // TODO > error handling
   };
 
   const putController = async (): Promise<void> => {
+    const roomId = String(req.query.room);
     const room = req.body;
 
     const stringifiedBody = JSON.stringify(room);

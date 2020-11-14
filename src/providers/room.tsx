@@ -10,8 +10,6 @@ import Axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 
-// import { useUser } from "./user";
-
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
   cluster: "us2",
 });
@@ -21,25 +19,20 @@ const RoomCtx = createContext<[Room, Dispatch<Room>]>(null);
 export const useRoom = () => {
   // SETUP
   const [room, setRoom] = useContext(RoomCtx);
-  // const { createUser } = useUser();
   const router = useRouter();
 
   const currentRoom = String(router.query.room || "");
 
   const handleAxiosError = ({ response }: AxiosError) => {
     console.log(response);
-    // switch (response.status) {
-    //   case 401:
-    //     return createUser("bla");
-    //   default:
-    //     router.push("/error");
-    // }
+    // TODO > Real error handling
   };
 
   // ACTIONS
   const getRoom = async (roomId): Promise<void> => {
     try {
       const { data } = await Axios.get<Room>(`/api/${roomId}`);
+      console.log("getRoom", data);
       return setRoom(data);
     } catch (err) {
       handleAxiosError(err);
