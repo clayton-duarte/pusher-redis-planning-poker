@@ -2,21 +2,29 @@ import React, { FunctionComponent, MouseEvent } from "react";
 import styled from "@emotion/styled";
 
 import { useRoom } from "../providers/room";
+import { findClosestEstimate } from "../helpers";
 import Button from "./Button";
 
 const Wrapper = styled.div`
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(3, 1fr);
   display: grid;
   gap: 1rem;
 `;
 
 const HostTools: FunctionComponent = () => {
-  const { room, resetVotes, toggleViewVotes } = useRoom();
+  const { room, acceptVote, toggleViewVotes, resetRound } = useRoom();
   const isVisible = room?.reveal;
+
+  const estimate = findClosestEstimate(room);
 
   const handleClickReset = (e: MouseEvent) => {
     e.preventDefault();
-    resetVotes();
+    resetRound();
+  };
+
+  const handleClickAccept = (e: MouseEvent) => {
+    e.preventDefault();
+    acceptVote(estimate);
   };
 
   const handleClickReview = (e: MouseEvent) => {
@@ -27,9 +35,12 @@ const HostTools: FunctionComponent = () => {
   return (
     <Wrapper>
       <Button onClick={handleClickReview}>
-        {isVisible ? "hide" : "reveal"}
+        👁️ {isVisible ? "hide" : "reveal"}
       </Button>
-      <Button onClick={handleClickReset}>reset</Button>
+      <Button disabled={!isVisible} onClick={handleClickAccept}>
+        👍 accept {isVisible && estimate}
+      </Button>
+      <Button onClick={handleClickReset}>🔄 restart round</Button>
     </Wrapper>
   );
 };

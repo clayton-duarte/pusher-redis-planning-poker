@@ -70,14 +70,26 @@ export const useRoom = () => {
     await putRoom(newRoom);
   };
 
-  const resetVotes = async () => {
+  const resetRound = async () => {
     const updatedMembers = room.members.map((member) => {
       return { ...member, lastVote: null };
     });
     const newRoom: Room = {
       ...room,
       members: updatedMembers,
-      resets: room.resets + 1,
+      reveal: false,
+    };
+    await putRoom(newRoom);
+  };
+
+  const acceptVote = async (voteAccepted: Points) => {
+    const updatedMembers = room.members.map((member) => {
+      return { ...member, lastVote: null };
+    });
+    const newRoom: Room = {
+      ...room,
+      rounds: room.rounds.concat(voteAccepted),
+      members: updatedMembers,
       reveal: false,
     };
     await putRoom(newRoom);
@@ -93,8 +105,9 @@ export const useRoom = () => {
 
   return {
     toggleViewVotes,
+    resetRound,
     createRoom,
-    resetVotes,
+    acceptVote,
     leaveRoom,
     sendVote,
     putRoom,

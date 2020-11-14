@@ -36,8 +36,8 @@ const roomController: NextApiHandler<Room> = (req, res) => {
     const newRoom: Room = {
       id: createID(),
       members: [user],
+      rounds: [],
       host: user,
-      resets: 0,
     };
 
     const stringifiedRoom = JSON.stringify(newRoom);

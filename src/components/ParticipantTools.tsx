@@ -7,10 +7,13 @@ import { points } from "../enums";
 import Button from "./Button";
 
 const CardWrapper = styled.section`
-  grid-template-columns: repeat(5, auto);
+  grid-template-columns: repeat(10, 1fr);
   justify-content: start;
   display: grid;
   gap: 1rem;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 `;
 
 const Card = styled(Button)`
@@ -18,7 +21,6 @@ const Card = styled(Button)`
   padding: 0.25rem;
   min-height: 3ch;
   font-size: 1rem;
-  min-width: 3ch;
 `;
 
 const ParticipantTools: FunctionComponent = () => {

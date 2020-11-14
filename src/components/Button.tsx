@@ -3,8 +3,8 @@ import styled from "@emotion/styled";
 export default styled.button`
   all: unset;
   border: 1px solid ${(props) => props.theme.primary};
-  background: ${(props) => props.theme.bg};
-  color: ${(props) => props.theme.primary};
+  background: ${(props) => props.theme.primary};
+  color: ${(props) => props.theme.bg};
   text-transform: uppercase;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -15,8 +15,8 @@ export default styled.button`
   cursor: pointer;
   display: grid;
   &:hover {
-    background: ${(props) => props.theme.primary};
-    color: ${(props) => props.theme.bg};
+    background: ${(props) => props.theme.bg};
+    color: ${(props) => props.theme.primary};
   }
   &:disabled {
     filter: grayscale(100%);

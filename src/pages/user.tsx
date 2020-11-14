@@ -12,7 +12,7 @@ const UserPage: NextPage = () => {
 
   const handleClick = () => {
     // TODO > validation
-    if (user) {
+    if (user?.length > 3) {
       createUser(user);
     }
   };
@@ -23,8 +23,8 @@ const UserPage: NextPage = () => {
 
   return (
     <Main>
-      <Input onChange={handelChange} placeholder="username" />
-      <Button onClick={handleClick}>submit</Button>
+      <Input onChange={handelChange} placeholder="Display Name" />
+      <Button onClick={handleClick}>💻 submit</Button>
     </Main>
   );
 };

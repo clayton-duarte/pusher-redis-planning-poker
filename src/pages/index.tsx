@@ -1,6 +1,7 @@
 import React from "react";
 import { NextPage } from "next";
 
+import LoadingPage from "../components/LoadingPage";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import Button from "../components/Button";
@@ -11,11 +12,13 @@ const HomePage: NextPage = () => {
   const { user, deleteUser } = useUser();
   const { createRoom } = useRoom();
 
+  if (!user) return <LoadingPage />;
+
   return (
     <Main>
       <Text>Hello {user?.name}!</Text>
-      <Button onClick={createRoom}>create room</Button>
-      <Button onClick={deleteUser}>logout</Button>
+      <Button onClick={createRoom}>✨ create room</Button>
+      <Button onClick={deleteUser}>🏃 logout</Button>
     </Main>
   );
 };
