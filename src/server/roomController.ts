@@ -54,7 +54,7 @@ const roomController: NextApiHandler<Room> = (req, res) => {
     const stringifiedRoom = JSON.stringify(room);
     await redis.set(roomId, stringifiedRoom);
 
-    pusher.trigger(roomId, "update", {
+    await pusher.trigger(roomId, "update", {
       message: "update",
     });
 

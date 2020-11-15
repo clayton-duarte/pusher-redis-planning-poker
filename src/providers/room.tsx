@@ -145,7 +145,7 @@ const Provider: FunctionComponent = ({ children }) => {
   const getRoom = async (roomId): Promise<void> => {
     try {
       const { data } = await Axios.get<Room>(`/api/${roomId}`);
-      return setRoom(data);
+      return setRoom({ ...data });
     } catch (err) {
       handleAxiosError(err);
     }
