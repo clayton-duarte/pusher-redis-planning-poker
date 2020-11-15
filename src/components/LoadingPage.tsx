@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const Wrapper = styled.div`
   place-items: center;
-  min-height: 90vh;
+  min-height: 75vh;
   display: grid;
   gap: 1rem;
 `;

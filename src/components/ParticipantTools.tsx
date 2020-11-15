@@ -1,10 +1,12 @@
 import React, { FunctionComponent, MouseEvent } from "react";
 import styled from "@emotion/styled";
 
+import { findClosestEstimate } from "../helpers";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import { points } from "../enums";
 import Button from "./Button";
+import Text from "./Text";
 
 const CardWrapper = styled.section`
   grid-template-columns: repeat(10, 1fr);
@@ -27,28 +29,47 @@ const ParticipantTools: FunctionComponent = () => {
   const { room, sendVote } = useRoom();
   const { user } = useUser();
 
+  const isVisible = room?.reveal;
   const alreadyVoted = Boolean(
     room?.members?.find((member) => member.id === user?.id)?.lastVote
   );
+
+  const estimate = findClosestEstimate(room);
+  const showEstimate = isVisible && estimate;
 
   const handleClick = (point: Points) => (e: MouseEvent) => {
     e.preventDefault();
     sendVote(point);
   };
 
+  const renderMessage = () => {
+    if (alreadyVoted) {
+      if (isVisible) return "Wait for the result";
+      return "Wait for the others";
+    }
+    return "Choose an estimate";
+  };
+
   return (
     <>
-      <CardWrapper>
-        {points.map((point) => (
-          <Card
-            onClick={handleClick(point)}
-            disabled={alreadyVoted}
-            key={`card-${point}`}
-          >
-            {point}
-          </Card>
-        ))}
-      </CardWrapper>
+      <Text>ℹ️ {renderMessage()}.</Text>
+      {showEstimate ? (
+        <Text alert="success">
+          ⚠️ The suggested estimate for this round is {showEstimate} points!
+        </Text>
+      ) : (
+        <CardWrapper>
+          {points.map((point) => (
+            <Card
+              onClick={handleClick(point)}
+              disabled={alreadyVoted}
+              key={`card-${point}`}
+            >
+              {point}
+            </Card>
+          ))}
+        </CardWrapper>
+      )}
     </>
   );
 };

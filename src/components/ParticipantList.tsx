@@ -6,7 +6,7 @@ import { useUser } from "../providers/user";
 import Text from "./Text";
 
 const List = styled.ul`
-  border: 1px solid ${(props) => props.theme.primary};
+  border: 1px solid ${(props) => props.theme.secondary};
   border-radius: 0.25rem;
   padding: 0.5rem 1rem;
   display: grid;
@@ -29,7 +29,14 @@ const ParticipantList: FunctionComponent = () => {
   const { room } = useRoom();
   const { user } = useUser();
 
-  if (room?.members?.length < 2) return null;
+  if (room?.members?.length < 2)
+    return (
+      <Text alert="error">
+        There are no participants yet.
+        <br />
+        Please share this room link with your team.
+      </Text>
+    );
 
   return (
     <List>
@@ -51,7 +58,7 @@ const ParticipantList: FunctionComponent = () => {
 
         return (
           <ListItem key={memberId}>
-            <Text>
+            <Text caps>
               👤 {memberName}
               {isMe && <span title="you"> ✋</span>}
             </Text>

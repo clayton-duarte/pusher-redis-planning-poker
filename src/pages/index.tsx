@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "@emotion/styled";
 import { NextPage } from "next";
 
 import LoadingPage from "../components/LoadingPage";
@@ -8,6 +9,15 @@ import Button from "../components/Button";
 import Text from "../components/Text";
 import Main from "../components/Main";
 
+const Wrapper = styled.div`
+  grid-template-columns: 1fr 1fr;
+  display: grid;
+  gap: 1rem;
+  @media (max-width: 425px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 const HomePage: NextPage = () => {
   const { user, deleteUser } = useUser();
   const { createRoom } = useRoom();
@@ -16,9 +26,17 @@ const HomePage: NextPage = () => {
 
   return (
     <Main>
-      <Text>Hello {user?.name}!</Text>
-      <Button onClick={createRoom}>✨ create room</Button>
-      <Button onClick={deleteUser}>🏃 logout</Button>
+      <Text primary caps>
+        Welcome {user?.name}!
+      </Text>
+      <Text>Please choose one of the actions bellow:</Text>
+      <Wrapper>
+        <Button secondary onClick={deleteUser}>
+          ✏️ change my name
+        </Button>
+        <Button onClick={createRoom}>✨ create a room</Button>
+      </Wrapper>
+      <Text alert="success">You will be the host!</Text>
     </Main>
   );
 };

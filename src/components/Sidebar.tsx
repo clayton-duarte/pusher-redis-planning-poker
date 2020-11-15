@@ -5,7 +5,7 @@ import { useRoom } from "../providers/room";
 import Text from "./Text";
 
 const SideBarWrapper = styled.aside`
-  border: 1px solid ${(props) => props.theme.primary};
+  border: 1px solid ${(props) => props.theme.secondary};
   background: ${(props) => props.theme.bg};
   border-radius: 0.25rem;
   align-content: start;
@@ -27,6 +27,12 @@ const Sidebar: FunctionComponent = () => {
   return (
     <SideBarWrapper>
       <Text primary>🏢 Room: {room?.id}</Text>
+      <EstimateWrapper>
+        <Text>🧮 Total points:</Text>
+        <Text>
+          {room?.rounds?.reduce((prev, curr) => prev + Number(curr), 0)}
+        </Text>
+      </EstimateWrapper>
       {room?.rounds?.map((roundEstimate, index) => (
         <EstimateWrapper key={roundEstimate + index}>
           <Text>🗳️ Round {index + 1}</Text>
