@@ -18,11 +18,60 @@ const CardWrapper = styled.section`
   }
 `;
 
-const Card = styled(Button)`
+const Card = styled.div`
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  position: relative;
+  display: grid;
+`;
+
+const CardFilled = styled(Button)`
+  background: ${(props) => props.theme.primary};
+  backface-visibility: hidden;
+  box-shadow: 0 0 0 #0005;
+  transition: 0.5s ease;
+  padding: 0.5rem 0rem;
   font-weight: unset;
-  padding: 0.25rem;
+  font-size: 1.2rem;
   min-height: 3ch;
-  font-size: 1rem;
+  &:hover {
+    background: ${(props) => props.theme.primary};
+    color: ${(props) => props.theme.bg};
+    box-shadow: 0 0 1rem #0005;
+    transform: scale(1.1);
+  }
+  &:disabled {
+    transform: rotateY(180deg);
+  }
+`;
+
+const CardEmpty = styled.span<{ disabled: boolean }>`
+  transform: rotateY(${(props) => (props.disabled ? "0" : "-180deg")});
+  background: linear-gradient(
+        90deg,
+        ${(props) => props.theme.primary} 0.125rem,
+        transparent 1%
+      )
+      center,
+    linear-gradient(
+        0deg,
+        ${(props) => props.theme.primary} 0.125rem,
+        transparent 1%
+      )
+      center,
+    ${(props) => props.theme.secondary};
+  background-size: 0.25rem 0.25rem;
+  background-position: 10% 10%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  border-radius: 0.25rem;
+  transition: 0.5s ease;
+  position: absolute;
+  content: "";
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
 `;
 
 const ParticipantTools: FunctionComponent = () => {
@@ -60,12 +109,15 @@ const ParticipantTools: FunctionComponent = () => {
       ) : (
         <CardWrapper>
           {points.map((point) => (
-            <Card
-              onClick={handleClick(point)}
-              disabled={alreadyVoted}
-              key={`card-${point}`}
-            >
-              {point}
+            <Card>
+              <CardFilled
+                onClick={handleClick(point)}
+                disabled={alreadyVoted}
+                key={`card-${point}`}
+              >
+                {point}
+              </CardFilled>
+              <CardEmpty disabled={alreadyVoted} />
             </Card>
           ))}
         </CardWrapper>

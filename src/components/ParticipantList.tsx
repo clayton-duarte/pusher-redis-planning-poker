@@ -25,6 +25,24 @@ const ListItem = styled.li`
   margin: 0;
 `;
 
+const AmperSand = styled(Text)`
+  @keyframes rotate180 {
+    from {
+      transform: rotate(-180deg);
+    }
+
+    25% {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+  animation: rotate180 2s ease infinite;
+`;
+
 const ParticipantList: FunctionComponent = () => {
   const { room } = useRoom();
   const { user } = useUser();
@@ -53,7 +71,7 @@ const ParticipantList: FunctionComponent = () => {
             if (canViewVote) return <Text>{lastVote}</Text>;
             return <Text>✅</Text>;
           }
-          return <Text>⏳</Text>;
+          return <AmperSand>⏳</AmperSand>;
         };
 
         return (

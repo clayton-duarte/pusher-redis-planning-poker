@@ -1,9 +1,10 @@
-import React, { FunctionComponent, MouseEvent } from "react";
+import React, { FunctionComponent, MouseEvent, useState } from "react";
 import styled from "@emotion/styled";
 
 import { findClosestEstimate } from "../helpers";
 import { useRoom } from "../providers/room";
 import Button from "./Button";
+import Modal from "./Modal";
 import Text from "./Text";
 
 const Wrapper = styled.div`
@@ -12,8 +13,15 @@ const Wrapper = styled.div`
   gap: 1rem;
 `;
 
+const Row = styled.div`
+  grid-template-columns: repeat(2, 1fr);
+  display: grid;
+  gap: 1rem;
+`;
+
 const HostTools: FunctionComponent = () => {
   const { room, acceptVote, toggleViewVotes, resetRound } = useRoom();
+  const [isResetting, setIsResetting] = useState<boolean>(false);
 
   const isVisible = room?.reveal;
   const onlyParticipants = room?.members?.filter(
@@ -28,6 +36,14 @@ const HostTools: FunctionComponent = () => {
 
   const handleClickReset = (e: MouseEvent) => {
     e.preventDefault();
+    setIsResetting(true);
+  };
+
+  const handleCancelReset = () => {
+    setIsResetting(false);
+  };
+  const handleConfirmReset = () => {
+    setIsResetting(false);
     resetRound();
   };
 
@@ -69,6 +85,18 @@ const HostTools: FunctionComponent = () => {
         >
           👍 accept {showEstimate}
         </Button>
+        <Modal open={isResetting} onCancel={handleCancelReset}>
+          <Text primary>Are you sure you want to restart the round?</Text>
+          <Text>
+            This action will erase all the votes from the participants.
+          </Text>
+          <Row>
+            <Button secondary onClick={handleCancelReset}>
+              cancel
+            </Button>
+            <Button onClick={handleConfirmReset}>confirm</Button>
+          </Row>
+        </Modal>
       </Wrapper>
     </>
   );
