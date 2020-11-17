@@ -60,7 +60,7 @@ const HostTools: FunctionComponent = () => {
   const renderMessage = () => {
     if (isVisible) return "Please accept this estimate or restart round";
     if (allVoted) return "It's time to reveal the estimates";
-    return "Waiting for the participants";
+    return "Waiting for the participants to vote";
   };
 
   return (

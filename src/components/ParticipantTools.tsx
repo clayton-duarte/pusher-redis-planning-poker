@@ -28,8 +28,8 @@ const Card = styled.div`
 const CardFilled = styled(Button)`
   background: ${(props) => props.theme.primary};
   backface-visibility: hidden;
-  box-shadow: 0 0 0 #0005;
-  transition: 0.5s ease;
+  box-shadow: 1px 1px 1px #0009;
+  transition: 0.25s ease;
   padding: 0.5rem 0rem;
   font-weight: unset;
   font-size: 1.2rem;
@@ -37,7 +37,7 @@ const CardFilled = styled(Button)`
   &:hover {
     background: ${(props) => props.theme.primary};
     color: ${(props) => props.theme.bg};
-    box-shadow: 0 0 1rem #0005;
+    box-shadow: 0.25rem 0.25rem 0.5rem #0009;
     transform: scale(1.1);
   }
   &:disabled {
@@ -74,8 +74,14 @@ const CardEmpty = styled.span<{ disabled: boolean }>`
   top: 0;
 `;
 
+const Row = styled.div`
+  grid-template-columns: 1fr auto;
+  display: grid;
+  gap: 1rem;
+`;
+
 const ParticipantTools: FunctionComponent = () => {
-  const { room, sendVote } = useRoom();
+  const { room, sendVote, leaveRoom } = useRoom();
   const { user } = useUser();
 
   const isVisible = room?.reveal;
@@ -101,15 +107,20 @@ const ParticipantTools: FunctionComponent = () => {
 
   return (
     <>
-      <Text>ℹ️ {renderMessage()}.</Text>
+      <Row>
+        <Text>ℹ️ {renderMessage()}.</Text>
+        <Button secondary onClick={leaveRoom}>
+          🚪 leave room
+        </Button>
+      </Row>
       {showEstimate ? (
         <Text alert="success">
           ⚠️ The suggested estimate for this round is {showEstimate} points!
         </Text>
       ) : (
         <CardWrapper>
-          {points.map((point) => (
-            <Card>
+          {points.map((point, index) => (
+            <Card key={point + index}>
               <CardFilled
                 onClick={handleClick(point)}
                 disabled={alreadyVoted}

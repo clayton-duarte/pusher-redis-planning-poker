@@ -25,8 +25,8 @@ const RoomCtx = createContext<[Room, Dispatch<Room>]>(null);
 
 export const useRoom = () => {
   // SETUP
-  const { user, deleteUser } = useUser();
   const [room] = useContext(RoomCtx);
+  const { user } = useUser();
   const router = useRouter();
 
   const currentRoom = String(router.query.room || "");
@@ -50,15 +50,15 @@ export const useRoom = () => {
   };
 
   const leaveRoom = async (): Promise<void> => {
-    const membersWithoutUser = room.members.filter(
+    const filteredMembers = room.members.filter(
       (member) => member.id !== user.id
     );
-
-    await Axios.put<Room>(`/api/${currentRoom}`, {
+    const newRoom: Room = {
       ...room,
-      members: membersWithoutUser,
-    });
-    await deleteUser();
+      members: filteredMembers,
+    };
+    await router.push("/");
+    await putRoom(newRoom);
   };
 
   const sendVote = async (point: Points) => {
@@ -103,11 +103,23 @@ export const useRoom = () => {
     await putRoom(newRoom);
   };
 
+  const kickMember = async (memberId: string) => {
+    const filteredMembers = room.members.filter(
+      (member) => member.id !== memberId
+    );
+    const newRoom: Room = {
+      ...room,
+      members: filteredMembers,
+    };
+    await putRoom(newRoom);
+  };
+
   return {
     toggleViewVotes,
     resetRound,
     createRoom,
     acceptVote,
+    kickMember,
     leaveRoom,
     sendVote,
     putRoom,

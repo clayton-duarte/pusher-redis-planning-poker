@@ -1,9 +1,17 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, MouseEvent, useState } from "react";
 import styled from "@emotion/styled";
 
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
+import Button from "./Button";
+import Modal from "./Modal";
 import Text from "./Text";
+
+const Row = styled.div`
+  grid-template-columns: auto auto;
+  display: grid;
+  gap: 1rem;
+`;
 
 const List = styled.ul`
   border: 1px solid ${(props) => props.theme.secondary};
@@ -15,7 +23,7 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 1fr auto;
   justify-content: space-between;
   text-transform: capitalize;
   list-style-type: none;
@@ -23,6 +31,7 @@ const ListItem = styled.li`
   position: relative;
   display: grid;
   margin: 0;
+  gap: 1rem;
 `;
 
 const AmperSand = styled(Text)`
@@ -30,24 +39,42 @@ const AmperSand = styled(Text)`
     from {
       transform: rotate(-180deg);
     }
-
     25% {
       transform: rotate(0deg);
     }
-
     to {
       transform: rotate(0deg);
     }
   }
-
   animation: rotate180 2s ease infinite;
 `;
 
+const Pointer = styled.div`
+  @keyframes point {
+    from {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(0.5rem, 0);
+    }
+    to {
+      transform: translate(0, 0);
+    }
+  }
+  animation: point 1s ease infinite;
+  display: inline-block;
+`;
+
+const Kicker = styled(Text)`
+  cursor: pointer;
+`;
+
 const ParticipantList: FunctionComponent = () => {
-  const { room } = useRoom();
+  const [kickingMember, setKickingMember] = useState<string>();
+  const { room, kickMember } = useRoom();
   const { user } = useUser();
 
-  if (room?.members?.length < 2)
+  if (room?.members?.length < 2) {
     return (
       <Text alert="error">
         There are no participants yet.
@@ -55,17 +82,40 @@ const ParticipantList: FunctionComponent = () => {
         Please share this room link with your team.
       </Text>
     );
+  }
+
+  const userIsHost = user?.id === room?.host?.id;
+
+  const handleKickMember = (memberId) => (e: MouseEvent) => {
+    setKickingMember(memberId);
+  };
+
+  const handleConfirmKickMember = () => {
+    kickMember(kickingMember);
+    setKickingMember(undefined);
+  };
+
+  const handleCancelKickMember = () => {
+    setKickingMember(undefined);
+  };
 
   return (
     <List>
       {room?.members?.map(({ name: memberName, id: memberId, lastVote }) => {
-        const isHost = memberId === room?.host?.id;
-        const isMe = memberId === user?.id;
+        const memberIsHost = memberId === room?.host?.id;
+        const memberIsMe = memberId === user?.id;
 
-        if (isHost) return null;
+        if (memberIsHost) return null;
+
+        const renderIcon = () => {
+          if (userIsHost)
+            return <Kicker onClick={handleKickMember(memberId)}>🦶</Kicker>;
+          if (memberIsMe) return <Pointer>👉</Pointer>;
+          return <Text>👤</Text>;
+        };
 
         const renderVote = () => {
-          const canViewVote = isMe || room?.reveal;
+          const canViewVote = memberIsMe || room?.reveal;
           const voted = Boolean(lastVote);
           if (voted) {
             if (canViewVote) return <Text>{lastVote}</Text>;
@@ -76,14 +126,28 @@ const ParticipantList: FunctionComponent = () => {
 
         return (
           <ListItem key={memberId}>
-            <Text caps>
-              👤 {memberName}
-              {isMe && <span title="you"> ✋</span>}
-            </Text>
+            {renderIcon()}
+            <Text caps>{memberName}</Text>
             {renderVote()}
           </ListItem>
         );
       })}
+      <Modal open={Boolean(kickingMember)} onCancel={handleCancelKickMember}>
+        <Text primary>Are you sure?</Text>
+        <Text>
+          This action will try to remove the user from this room.
+          <br />
+          Only offline users can be removed that way.
+          <br />
+          Online users will join the room again automatically.
+        </Text>
+        <Row>
+          <Button onClick={handleCancelKickMember} secondary>
+            cancel
+          </Button>
+          <Button onClick={handleConfirmKickMember}>confirm</Button>
+        </Row>
+      </Modal>
     </List>
   );
 };
