@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { useSession, signIn, signOut } from "next-auth/client";
 import { NextPage } from "next";
 
 import LoadingPage from "../components/LoadingPage";
@@ -19,10 +20,11 @@ const Wrapper = styled.div`
 `;
 
 const HomePage: NextPage = () => {
+  const [session, loading] = useSession();
   const { user, deleteUser } = useUser();
   const { createRoom } = useRoom();
 
-  if (!user) return <LoadingPage />;
+  // if (!user) return <LoadingPage />;
 
   return (
     <Main>
@@ -35,6 +37,10 @@ const HomePage: NextPage = () => {
           ✏️ change my name
         </Button>
         <Button onClick={createRoom}>✨ create a room</Button>
+        <Button onClick={() => signIn("google")}>🔑 sign In</Button>
+        <Button onClick={() => signOut({ callbackUrl: "/" })}>
+          🔑 sign out
+        </Button>
       </Wrapper>
       <Text alert="success">You will be the host!</Text>
     </Main>
