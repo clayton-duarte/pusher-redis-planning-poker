@@ -1,7 +1,6 @@
 import { NextApiHandler } from "next";
 
 import { HttpMethods } from "../enums";
-import { createID } from "../helpers";
 
 const userController: NextApiHandler<User> = (req, res) => {
   // CONTROLLERS
@@ -19,7 +18,6 @@ const userController: NextApiHandler<User> = (req, res) => {
 
     const newUser: User = {
       name: username,
-      id: createID(),
     };
 
     req.session.set("user", newUser);

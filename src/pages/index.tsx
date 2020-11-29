@@ -22,10 +22,6 @@ const HomePage: NextPage = () => {
   const { loading, user, signOut } = useUser();
   const { createRoom } = useRoom();
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
-  };
-
   if (loading) return <LoadingPage />;
   if (!user) return null;
 
@@ -39,7 +35,7 @@ const HomePage: NextPage = () => {
         <Button disabled={!user} onClick={createRoom}>
           ✨ create a room
         </Button>
-        <Button onClick={handleSignOut}>🔑 sign out</Button>
+        <Button onClick={signOut}>🔑 sign out</Button>
       </Row>
       <Text alert="success">When you create a new room you are the host!</Text>
     </Main>

@@ -29,7 +29,6 @@ declare global {
     email: string;
     image: string;
     name: string;
-    // id: string;
   }
 
   export interface Room {
