@@ -4,25 +4,11 @@ import { HttpMethods } from "../enums";
 
 const userController: NextApiHandler<User> = (req, res) => {
   // CONTROLLERS
-  const getController = async (): Promise<void> => {
-    const user: User = req.session.get("user");
-    if (user) {
-      res.json(user);
-    } else {
-      res.end();
-    }
-  };
-
   const postController = async (): Promise<void> => {
-    const username: string = req.body.username;
-
-    const newUser: User = {
-      name: username,
-    };
-
-    req.session.set("user", newUser);
+    const user: User = req.body.user;
+    req.session.set("user", user);
     await req.session.save();
-    res.send(newUser);
+    res.json(user);
   };
 
   const deleteController = async (): Promise<void> => {
@@ -31,8 +17,6 @@ const userController: NextApiHandler<User> = (req, res) => {
   };
 
   switch (req.method) {
-    case HttpMethods.GET:
-      return getController();
     case HttpMethods.POST:
       return postController();
     case HttpMethods.DELETE:

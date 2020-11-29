@@ -84,10 +84,10 @@ const ParticipantList: FunctionComponent = () => {
     );
   }
 
-  const userIsHost = user?.id === room?.host?.id;
+  const userIsHost = user?.email === room?.host?.email;
 
-  const handleKickMember = (memberId) => (e: MouseEvent) => {
-    setKickingMember(memberId);
+  const handleKickMember = (memberEmail) => (e: MouseEvent) => {
+    setKickingMember(memberEmail);
   };
 
   const handleConfirmKickMember = () => {
@@ -101,37 +101,41 @@ const ParticipantList: FunctionComponent = () => {
 
   return (
     <List>
-      {room?.members?.map(({ name: memberName, id: memberId, lastVote }) => {
-        const memberIsHost = memberId === room?.host?.id;
-        const memberIsMe = memberId === user?.id;
+      {room?.members?.map(
+        ({ name: memberName, email: memberEmail, lastVote }) => {
+          const memberIsHost = memberEmail === room?.host?.email;
+          const memberIsMe = memberEmail === user?.email;
 
-        if (memberIsHost) return null;
+          if (memberIsHost) return null;
 
-        const renderIcon = () => {
-          if (userIsHost)
-            return <Kicker onClick={handleKickMember(memberId)}>🦶</Kicker>;
-          if (memberIsMe) return <Pointer>👉</Pointer>;
-          return <Text>👤</Text>;
-        };
+          const renderIcon = () => {
+            if (userIsHost)
+              return (
+                <Kicker onClick={handleKickMember(memberEmail)}>🦶</Kicker>
+              );
+            if (memberIsMe) return <Pointer>👉</Pointer>;
+            return <Text>👤</Text>;
+          };
 
-        const renderVote = () => {
-          const canViewVote = memberIsMe || room?.reveal;
-          const voted = Boolean(lastVote);
-          if (voted) {
-            if (canViewVote) return <Text>{lastVote}</Text>;
-            return <Text>✅</Text>;
-          }
-          return <AmperSand>⏳</AmperSand>;
-        };
+          const renderVote = () => {
+            const canViewVote = memberIsMe || room?.reveal;
+            const voted = Boolean(lastVote);
+            if (voted) {
+              if (canViewVote) return <Text>{lastVote}</Text>;
+              return <Text>✅</Text>;
+            }
+            return <AmperSand>⏳</AmperSand>;
+          };
 
-        return (
-          <ListItem key={memberId}>
-            {renderIcon()}
-            <Text caps>{memberName}</Text>
-            {renderVote()}
-          </ListItem>
-        );
-      })}
+          return (
+            <ListItem key={memberEmail}>
+              {renderIcon()}
+              <Text caps>{memberName}</Text>
+              {renderVote()}
+            </ListItem>
+          );
+        }
+      )}
       <Modal open={Boolean(kickingMember)} onCancel={handleCancelKickMember}>
         <Text primary>Are you sure?</Text>
         <Text>

@@ -86,7 +86,7 @@ const ParticipantTools: FunctionComponent = () => {
 
   const isVisible = room?.reveal;
   const alreadyVoted = Boolean(
-    room?.members?.find((member) => member.id === user?.id)?.lastVote
+    room?.members?.find((member) => member.email === user?.email)?.lastVote
   );
 
   const estimate = findClosestEstimate(room);

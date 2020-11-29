@@ -51,7 +51,7 @@ export const useRoom = () => {
 
   const leaveRoom = async (): Promise<void> => {
     const filteredMembers = room.members.filter(
-      (member) => member.id !== user.id
+      (member) => member.email !== user.email
     );
     const newRoom: Room = {
       ...room,
@@ -63,7 +63,7 @@ export const useRoom = () => {
 
   const sendVote = async (point: Points) => {
     const updatedMembers = room.members.map((member) => {
-      if (member.id === user.id) return { ...member, lastVote: point };
+      if (member.email === user.email) return { ...member, lastVote: point };
       return member;
     });
     const newRoom: Room = { ...room, members: updatedMembers };
@@ -103,9 +103,9 @@ export const useRoom = () => {
     await putRoom(newRoom);
   };
 
-  const kickMember = async (memberId: string) => {
+  const kickMember = async (memberEmail: string) => {
     const filteredMembers = room.members.filter(
-      (member) => member.id !== memberId
+      (member) => member.email !== memberEmail
     );
     const newRoom: Room = {
       ...room,
@@ -173,7 +173,7 @@ const Provider: FunctionComponent = ({ children }) => {
   useEffect(() => {
     if (room && user) {
       const isInTheRoom = room?.members?.find(
-        ({ id: memberId }) => memberId === user.id
+        (member) => member.email === user.email
       );
 
       if (!isInTheRoom) {

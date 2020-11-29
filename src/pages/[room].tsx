@@ -26,7 +26,7 @@ const RoomPage: NextPage = () => {
   if (!(room && user)) return <LoadingPage />;
 
   const isVisible = room?.reveal;
-  const isHost = user?.id === room?.host?.id;
+  const isHost = user?.email === room?.host?.email;
   const estimate = isVisible && findClosestEstimate(room);
 
   return (

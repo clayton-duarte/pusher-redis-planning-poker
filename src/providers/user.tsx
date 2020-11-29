@@ -9,22 +9,26 @@ import Axios from "axios";
 
 import LoadingPage from "../components/LoadingPage";
 
-const UserCtx = createContext<[session: any, loading: boolean]>(null);
+const UserCtx = createContext<[session: { user: User }, loading: boolean]>(
+  null
+);
 
 const Provider: FunctionComponent = ({ children }) => {
   const [session, loading] = useSession();
 
   const postUser = async (user: User): Promise<void> => {
-    await Axios.post<User>("/api/user", user);
+    await Axios.post<User>("/api/user", { user });
   };
 
   useEffect(() => {
-    if (!loading && !session) {
-      // FORCE LOGIN
-      signIn("google");
-    }
-    if (session) {
-      postUser(session.user);
+    if (!loading) {
+      if (session) {
+        // SAVE COOKIE
+        postUser(session?.user);
+      } else {
+        // FORCE LOGIN
+        signIn("google");
+      }
     }
   }, [loading, session]);
 
@@ -39,7 +43,7 @@ const Provider: FunctionComponent = ({ children }) => {
 
 export const useUser = () => {
   const [session, loading] = useContext(UserCtx);
-  const user = session?.user;
+  const user = session?.user as User;
 
   const signOut = async (): Promise<void> => {
     baseSignOut({ callbackUrl: "/" });

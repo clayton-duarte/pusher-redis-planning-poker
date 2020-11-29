@@ -25,7 +25,7 @@ const HostTools: FunctionComponent = () => {
 
   const isVisible = room?.reveal;
   const onlyParticipants = room?.members?.filter(
-    (member) => member.id !== room.host.id
+    ({ email: memberEmail }) => memberEmail !== room.host.email
   );
   const allVoted = onlyParticipants?.reduce(
     (prev, { lastVote }) => prev && Boolean(lastVote),
