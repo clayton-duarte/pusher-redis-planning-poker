@@ -26,8 +26,10 @@ declare global {
 
   export interface User {
     lastVote?: Points;
+    email: string;
+    image: string;
     name: string;
-    id: string;
+    // id: string;
   }
 
   export interface Room {

@@ -19,12 +19,13 @@ const Provider: FunctionComponent = ({ children }) => {
         styles={css`
           @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
           html,
-          body {
+          body,
+          #__next {
             font-family: "Montserrat", sans-serif;
             font-size: ${theme.size};
             background: ${theme.bg};
             color: ${theme.text};
-            min-height: 100%;
+            min-height: 100vh;
             padding: 0;
             margin: 0;
             * {

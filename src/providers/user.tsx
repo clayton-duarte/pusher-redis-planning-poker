@@ -3,54 +3,37 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useState,
-  Dispatch,
 } from "react";
-import { useRouter } from "next/router";
-import Axios from "axios";
+import { useSession, signIn, signOut } from "next-auth/client";
 
-const UserCtx = createContext<[User, Dispatch<User>]>(null);
+import LoadingPage from "../components/LoadingPage";
 
-export const useUser = () => {
-  const [user, setUser] = useContext(UserCtx);
-  const router = useRouter();
-
-  const createUser = async (username): Promise<void> => {
-    const { data } = await Axios.post<User>("/api/user", { username });
-    setUser(data);
-    router.back();
-  };
-
-  const deleteUser = async (): Promise<void> => {
-    await Axios.delete<"OK">("/api/user");
-    setUser(null);
-  };
-
-  return { user, createUser, deleteUser };
-};
+const UserCtx = createContext<{ session; loading }>(null);
 
 const Provider: FunctionComponent = ({ children }) => {
-  const [user, setUser] = useState<User>();
-  const router = useRouter();
-
-  const getUser = async (): Promise<void> => {
-    const { data } = await Axios.get<User>("/api/user");
-    if (data) {
-      return setUser(data);
-    } else {
-      router.push("/user");
-    }
-  };
+  const [session, loading] = useSession();
 
   useEffect(() => {
-    if (!user) {
-      getUser();
+    if (!loading && !session) {
+      // FORCE LOGIN
+      signIn("google");
     }
-  }, [user]);
+  }, [loading, session]);
+
+  if (loading) return <LoadingPage />;
+
+  console.log(session?.user);
 
   return (
-    <UserCtx.Provider value={[user, setUser]}>{children}</UserCtx.Provider>
+    <UserCtx.Provider value={{ session, loading }}>{children}</UserCtx.Provider>
   );
+};
+
+export const useUser = () => {
+  const { session, loading } = useContext(UserCtx);
+  const user = session?.user;
+
+  return { loading, user, signIn, signOut };
 };
 
 export default Provider;

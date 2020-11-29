@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useSession, signIn, signOut } from "next-auth/client";
 import { NextPage } from "next";
 
 import LoadingPage from "../components/LoadingPage";
@@ -10,7 +9,7 @@ import Button from "../components/Button";
 import Text from "../components/Text";
 import Main from "../components/Main";
 
-const Wrapper = styled.div`
+const Row = styled.div`
   grid-template-columns: 1fr 1fr;
   display: grid;
   gap: 1rem;
@@ -20,11 +19,15 @@ const Wrapper = styled.div`
 `;
 
 const HomePage: NextPage = () => {
-  const [session, loading] = useSession();
-  const { user, deleteUser } = useUser();
+  const { loading, user, signOut } = useUser();
   const { createRoom } = useRoom();
 
-  // if (!user) return <LoadingPage />;
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
+
+  if (loading) return <LoadingPage />;
+  if (!user) return null;
 
   return (
     <Main>
@@ -32,17 +35,13 @@ const HomePage: NextPage = () => {
         Welcome {user?.name}!
       </Text>
       <Text>Please choose one of the actions bellow:</Text>
-      <Wrapper>
-        <Button secondary onClick={deleteUser}>
-          ✏️ change my name
+      <Row>
+        <Button disabled={!user} onClick={createRoom}>
+          ✨ create a room
         </Button>
-        <Button onClick={createRoom}>✨ create a room</Button>
-        <Button onClick={() => signIn("google")}>🔑 sign In</Button>
-        <Button onClick={() => signOut({ callbackUrl: "/" })}>
-          🔑 sign out
-        </Button>
-      </Wrapper>
-      <Text alert="success">You will be the host!</Text>
+        <Button onClick={handleSignOut}>🔑 sign out</Button>
+      </Row>
+      <Text alert="success">When you create a new room you are the host!</Text>
     </Main>
   );
 };
