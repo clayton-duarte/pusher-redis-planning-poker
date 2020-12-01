@@ -18,11 +18,8 @@ const Wrapper = styled(Row)`
 `;
 
 const HomePage: NextPage = () => {
-  const { loading, user, signOut } = useUser();
+  const { user, signOut } = useUser();
   const { createRoom } = useRoom();
-
-  if (loading) return <LoadingPage />;
-  if (!user) return null;
 
   return (
     <Main>

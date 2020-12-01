@@ -103,7 +103,7 @@ const ParticipantTools: FunctionComponent = () => {
   return (
     <>
       <StyledRow>
-        <Text>ℹ️ {renderMessage()}.</Text>
+        <Text>ℹ️ {renderMessage()}</Text>
         <Button secondary onClick={leaveRoom}>
           🚪 leave room
         </Button>

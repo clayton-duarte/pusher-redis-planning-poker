@@ -1,6 +1,7 @@
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import styled from "@emotion/styled";
 
+import { allParticipantsVoted, getOnlyParticipants } from "../helpers";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import Button from "./Button";
@@ -49,12 +50,20 @@ const Kicker = styled(Text)`
   cursor: pointer;
 `;
 
+const Vote = styled(Text)`
+  text-align: center;
+`;
+
 const ParticipantList: FunctionComponent = () => {
   const [kickingMember, setKickingMember] = useState<string>();
   const { room, kickMember } = useRoom();
   const { user } = useUser();
 
-  if (room?.members?.length < 2) {
+  const userIsHost = user?.email === room?.host?.email;
+  const onlyParticipants = getOnlyParticipants(room);
+  const allVoted = allParticipantsVoted(room);
+
+  if (!onlyParticipants.length) {
     return (
       <Text alert="error">
         There are no participants yet.
@@ -63,8 +72,6 @@ const ParticipantList: FunctionComponent = () => {
       </Text>
     );
   }
-
-  const userIsHost = user?.email === room?.host?.email;
 
   const handleKickMember = (memberEmail) => (e: MouseEvent) => {
     setKickingMember(memberEmail);
@@ -81,37 +88,37 @@ const ParticipantList: FunctionComponent = () => {
 
   return (
     <List>
-      {room?.members?.map(
+      {onlyParticipants.map(
         ({ name: memberName, email: memberEmail, lastVote }) => {
-          const memberIsHost = memberEmail === room?.host?.email;
           const memberIsMe = memberEmail === user?.email;
 
-          if (memberIsHost) return null;
-
           const renderIcon = () => {
-            if (userIsHost)
+            if (userIsHost) {
               return (
                 <Kicker onClick={handleKickMember(memberEmail)}>🦶</Kicker>
               );
-            if (memberIsMe) return <Pointer>👉</Pointer>;
+            }
+            if (memberIsMe) {
+              return <Pointer>👉</Pointer>;
+            }
             return <Text>👤</Text>;
           };
 
           const renderVote = () => {
-            const canViewVote = memberIsMe || room?.reveal;
+            const canViewVote = memberIsMe || room?.reveal || allVoted;
             const voted = Boolean(lastVote);
             if (voted) {
-              if (canViewVote) return <Text>{lastVote}</Text>;
-              return <Text>✅</Text>;
+              if (canViewVote) return lastVote;
+              return "✅";
             }
-            return <Text>⏳</Text>;
+            return "⏳";
           };
 
           return (
             <ListItem key={memberEmail}>
               {renderIcon()}
               <Text caps>{memberName}</Text>
-              {renderVote()}
+              <Vote>{renderVote()}</Vote>
             </ListItem>
           );
         }

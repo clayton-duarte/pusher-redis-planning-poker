@@ -10,6 +10,7 @@ import Axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 
+import LoadingPage from "../components/LoadingPage";
 import { useUser } from "./user";
 
 const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
@@ -129,7 +130,7 @@ export const useRoom = () => {
 
 const Provider: FunctionComponent = ({ children }) => {
   const [room, setRoom] = useState<Room>();
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const router = useRouter();
 
   const currentRoom = String(router.query.room || "");
@@ -164,11 +165,11 @@ const Provider: FunctionComponent = ({ children }) => {
   };
 
   useEffect(() => {
-    if (currentRoom) {
+    if (!loading && !room && user && currentRoom) {
       getRoom(currentRoom);
       subscribeToRoom();
     }
-  }, [currentRoom]);
+  }, [loading, currentRoom, user, room]);
 
   useEffect(() => {
     if (room && user) {
@@ -181,6 +182,9 @@ const Provider: FunctionComponent = ({ children }) => {
       }
     }
   }, [room, user]);
+
+  if (loading) return <LoadingPage />;
+  if (!user) return null;
 
   return (
     <RoomCtx.Provider value={[room, setRoom]}>{children}</RoomCtx.Provider>

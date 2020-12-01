@@ -4,6 +4,21 @@ export const createID = (): string => {
   return `${timestamp}-${random}`;
 };
 
+export const getOnlyParticipants = (room: Room) => {
+  return room?.members?.filter(
+    ({ email: memberEmail }) => memberEmail !== room.host.email
+  );
+};
+
+export const allParticipantsVoted = (room: Room) => {
+  const onlyParticipants = getOnlyParticipants(room);
+
+  return onlyParticipants?.reduce(
+    (prev, { lastVote }) => prev && Boolean(lastVote),
+    Boolean(onlyParticipants?.length)
+  );
+};
+
 export const findClosestEstimate = (room: Room): Points => {
   const votingMembers = room?.members?.filter(
     ({ lastVote }) => lastVote != null

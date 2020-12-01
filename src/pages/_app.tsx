@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 
@@ -7,7 +7,19 @@ import ThemeProvider from "../providers/theme";
 import RoomProvider from "../providers/room";
 import UserProvider from "../providers/user";
 
-const App: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => {
+const MyApp: FunctionComponent<AppProps> = ({
+  Component: Page,
+  pageProps,
+  router,
+}) => {
+  useEffect(() => {
+    // CLEAN AS PATH
+    if (router.asPath.includes("#")) {
+      const newPath = router.asPath.replace("#", "");
+      router.replace(router.route, newPath);
+    }
+  }, [router.asPath]);
+
   return (
     <ThemeProvider>
       <UserProvider>
@@ -24,4 +36,4 @@ const App: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => {
   );
 };
 
-export default App;
+export default MyApp;
