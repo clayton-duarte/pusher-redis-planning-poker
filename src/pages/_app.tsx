@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { AppProps } from "next/app";
+import Head from "next/head";
 
 import PageTemplate from "../components/PageTemplate";
 import ThemeProvider from "../providers/theme";
@@ -12,6 +13,9 @@ const App: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => {
       <UserProvider>
         <RoomProvider>
           <PageTemplate>
+            <Head>
+              <title>Planning Poker</title>
+            </Head>
             <Page {...pageProps} />
           </PageTemplate>
         </RoomProvider>
