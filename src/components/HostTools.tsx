@@ -54,8 +54,7 @@ const HostTools: FunctionComponent = () => {
   };
 
   const renderReviewButtonText = () => {
-    if (isVisible) return "🔒 hide"; // this first
-    if (showEstimate) return "👀 revealed";
+    if (showEstimate) return "🔒 hide"; // this first
     return "🔓 reveal";
   };
 
