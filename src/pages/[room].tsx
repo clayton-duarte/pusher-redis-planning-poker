@@ -10,6 +10,7 @@ import HostTools from "../components/HostTools";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import Sidebar from "../components/Sidebar";
+import Share from "../components/Share";
 import Main from "../components/Main";
 import Text from "../components/Text";
 import Row from "../components/Row";
@@ -46,6 +47,7 @@ const RoomPage: NextPage = () => {
         <ParticipantList />
       </Main>
       <Sidebar />
+      <Share />
     </>
   );
 };

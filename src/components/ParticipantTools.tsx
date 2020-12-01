@@ -28,10 +28,9 @@ const CardFilled = styled(Button)`
   backface-visibility: hidden;
   box-shadow: 1px 1px 1px #0009;
   transition: 0.25s ease;
-  padding: 0.5rem 0rem;
+  padding: 1rem 0rem;
   font-weight: unset;
   font-size: 1.2rem;
-  min-height: 3ch;
   &:hover {
     background: ${(props) => props.theme.primary};
     color: ${(props) => props.theme.bg};

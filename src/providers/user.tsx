@@ -34,8 +34,6 @@ const Provider: FunctionComponent = ({ children }) => {
 
   if (loading) return <LoadingPage />;
 
-  console.log(session);
-
   return (
     <UserCtx.Provider value={[session, loading]}>{children}</UserCtx.Provider>
   );

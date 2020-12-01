@@ -10,7 +10,7 @@ const SideBarWrapper = styled(Row)`
   background: ${(props) => props.theme.bg};
   border-radius: 0.25rem;
   align-content: start;
-  grid-area: "sidebar";
+  grid-area: sidebar;
   padding: 1rem;
 `;
 
@@ -24,9 +24,8 @@ const Sidebar: FunctionComponent = () => {
 
   return (
     <SideBarWrapper>
-      <Text primary>🏢 Room: {room?.id}</Text>
       <Wrapper>
-        <Text>🧮 Total points:</Text>
+        <Text>🧮 Total points</Text>
         <Text>
           {room?.rounds?.reduce((prev, curr) => prev + Number(curr), 0)}
         </Text>
