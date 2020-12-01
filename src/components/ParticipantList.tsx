@@ -29,21 +29,6 @@ const ListItem = styled.li`
   gap: 1rem;
 `;
 
-const AmperSand = styled(Text)`
-  @keyframes rotate180 {
-    from {
-      transform: rotate(-180deg);
-    }
-    25% {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(0deg);
-    }
-  }
-  animation: rotate180 2s ease infinite;
-`;
-
 const Pointer = styled.div`
   @keyframes point {
     from {
@@ -119,7 +104,7 @@ const ParticipantList: FunctionComponent = () => {
               if (canViewVote) return <Text>{lastVote}</Text>;
               return <Text>✅</Text>;
             }
-            return <AmperSand>⏳</AmperSand>;
+            return <Text>⏳</Text>;
           };
 
           return (
