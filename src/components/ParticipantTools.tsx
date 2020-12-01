@@ -7,22 +7,20 @@ import { useUser } from "../providers/user";
 import { points } from "../enums";
 import Button from "./Button";
 import Text from "./Text";
+import Row from "./Row";
 
-const CardWrapper = styled.section`
+const CardWrapper = styled(Row)`
   grid-template-columns: repeat(10, 1fr);
   justify-content: start;
-  display: grid;
-  gap: 1rem;
   @media (max-width: 1024px) {
     grid-template-columns: repeat(5, 1fr);
   }
 `;
 
-const Card = styled.div`
+const Card = styled(Row)`
   transform-style: preserve-3d;
   perspective: 1000px;
   position: relative;
-  display: grid;
 `;
 
 const CardFilled = styled(Button)`
@@ -74,10 +72,8 @@ const CardEmpty = styled.span<{ disabled: boolean }>`
   top: 0;
 `;
 
-const Row = styled.div`
+const StyledRow = styled(Row)`
   grid-template-columns: 1fr auto;
-  display: grid;
-  gap: 1rem;
 `;
 
 const ParticipantTools: FunctionComponent = () => {
@@ -107,12 +103,12 @@ const ParticipantTools: FunctionComponent = () => {
 
   return (
     <>
-      <Row>
+      <StyledRow>
         <Text>ℹ️ {renderMessage()}.</Text>
         <Button secondary onClick={leaveRoom}>
           🚪 leave room
         </Button>
-      </Row>
+      </StyledRow>
       {showEstimate ? (
         <Text alert="success">
           ⚠️ The suggested estimate for this round is {showEstimate} points!

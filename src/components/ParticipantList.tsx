@@ -6,12 +6,7 @@ import { useUser } from "../providers/user";
 import Button from "./Button";
 import Modal from "./Modal";
 import Text from "./Text";
-
-const Row = styled.div`
-  grid-template-columns: auto auto;
-  display: grid;
-  gap: 1rem;
-`;
+import Row from "./Row";
 
 const List = styled.ul`
   border: 1px solid ${(props) => props.theme.secondary};
@@ -145,7 +140,7 @@ const ParticipantList: FunctionComponent = () => {
           <br />
           Online users will join the room again automatically.
         </Text>
-        <Row>
+        <Row cols={2}>
           <Button onClick={handleCancelKickMember} secondary>
             cancel
           </Button>

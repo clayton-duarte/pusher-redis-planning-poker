@@ -8,11 +8,10 @@ import { useUser } from "../providers/user";
 import Button from "../components/Button";
 import Text from "../components/Text";
 import Main from "../components/Main";
+import Row from "../components/Row";
 
-const Row = styled.div`
+const Wrapper = styled(Row)`
   grid-template-columns: 1fr 1fr;
-  display: grid;
-  gap: 1rem;
   @media (max-width: 425px) {
     grid-template-columns: 1fr;
   }
@@ -31,12 +30,12 @@ const HomePage: NextPage = () => {
         Welcome {user?.name}!
       </Text>
       <Text>Please choose one of the actions bellow:</Text>
-      <Row>
+      <Wrapper>
         <Button disabled={!user} onClick={createRoom}>
           ✨ create a room
         </Button>
         <Button onClick={signOut}>🔑 sign out</Button>
-      </Row>
+      </Wrapper>
       <Text alert="success">When you create a new room you are the host!</Text>
     </Main>
   );

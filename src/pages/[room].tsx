@@ -12,11 +12,11 @@ import { useUser } from "../providers/user";
 import Sidebar from "../components/Sidebar";
 import Main from "../components/Main";
 import Text from "../components/Text";
+import Row from "../components/Row";
 
-const Wrapper = styled.div`
+const Wrapper = styled(Row)`
   grid-template-columns: auto auto;
   justify-content: space-between;
-  display: grid;
 `;
 
 const RoomPage: NextPage = () => {
