@@ -1,7 +1,7 @@
 import React, { FunctionComponent, MouseEvent } from "react";
 import styled from "@emotion/styled";
 
-import { findClosestEstimate } from "../helpers";
+import { findClosestEstimate, isReadyToEstimate } from "../helpers";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import { points } from "../enums";
@@ -84,8 +84,8 @@ const ParticipantTools: FunctionComponent = () => {
     room?.members?.find((member) => member.email === user?.email)?.lastVote
   );
 
+  const showEstimate = isReadyToEstimate(room);
   const estimate = findClosestEstimate(room);
-  const showEstimate = isVisible && estimate;
 
   const handleClick = (point: Points) => (e: MouseEvent) => {
     e.preventDefault();
@@ -110,7 +110,8 @@ const ParticipantTools: FunctionComponent = () => {
       </StyledRow>
       {showEstimate ? (
         <Text alert="success">
-          ⚠️ The suggested estimate for this round is {showEstimate} points!
+          ⚠️ The suggested estimate for this round is {estimate} point
+          {estimate === "1" ? "" : "s"}!
         </Text>
       ) : (
         <CardWrapper>

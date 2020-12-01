@@ -9,6 +9,7 @@ import {
   allParticipantsVoted,
   findClosestEstimate,
   getOnlyParticipants,
+  isReadyToEstimate,
 } from "../helpers";
 
 const HostTools: FunctionComponent = () => {
@@ -20,6 +21,7 @@ const HostTools: FunctionComponent = () => {
   const noParticipants = onlyParticipants?.length < 1;
   const allVoted = allParticipantsVoted(room);
   const estimate = findClosestEstimate(room);
+  const showEstimate = isReadyToEstimate(room);
 
   const handleClickReset = (e: MouseEvent) => {
     e.preventDefault();
@@ -44,12 +46,6 @@ const HostTools: FunctionComponent = () => {
     toggleViewVotes(!isVisible);
   };
 
-  const isReadyToEstimate = (): boolean => {
-    if (isVisible) return true;
-    if (allVoted) return true;
-    return false;
-  };
-
   const renderMessage = () => {
     if (noParticipants) return "Waiting for the participants to join";
     if (isVisible) return "Please accept this estimate or restart round";
@@ -58,16 +54,17 @@ const HostTools: FunctionComponent = () => {
   };
 
   const renderReviewButtonText = () => {
-    if (isReadyToEstimate()) return "👀 revealed";
-    if (isVisible) return "🔒 hide";
+    if (isVisible) return "🔒 hide"; // this first
+    if (showEstimate) return "👀 revealed";
     return "🔓 reveal";
   };
 
   return (
     <>
-      {isReadyToEstimate() && (
+      {showEstimate && (
         <Text alert="success">
-          ⚠️ The suggested estimate for this round is {estimate} points!
+          ⚠️ The suggested estimate for this round is {estimate} point
+          {estimate === "1" ? "" : "s"}!
         </Text>
       )}
       <Text>ℹ️ {renderMessage()}</Text>
@@ -79,8 +76,8 @@ const HostTools: FunctionComponent = () => {
           {renderReviewButtonText()}
         </Button>
         <Button
-          disabled={!isReadyToEstimate()}
           onClick={handleClickAccept}
+          disabled={!showEstimate}
           pulse={isVisible}
         >
           👍 accept {estimate}
