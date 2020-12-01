@@ -16,9 +16,9 @@ const Wrapper = styled.main`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas:
+      "share"
       "main"
-      "sidebar"
-      "share";
+      "sidebar";
   }
 `;
 
