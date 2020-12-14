@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { allParticipantsVoted, getOnlyParticipants } from "../helpers";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
+import Tooltip from "./Tooltip";
 import Button from "./Button";
 import Modal from "./Modal";
 import Text from "./Text";
@@ -46,10 +47,6 @@ const Pointer = styled.div`
   display: inline-block;
 `;
 
-const ClickableIcon = styled(Text)`
-  cursor: pointer;
-`;
-
 const Vote = styled(Text)`
   text-align: center;
 `;
@@ -85,31 +82,44 @@ const ParticipantList: FunctionComponent = () => {
               if (userIsHost) {
                 return (
                   <Row cols={2}>
-                    <ClickableIcon
+                    <Tooltip
                       onClick={() => setKickingMember(memberEmail)}
+                      tip="Remove"
                     >
                       ❌
-                    </ClickableIcon>
-                    <ClickableIcon onClick={() => setMakingHost(memberEmail)}>
+                    </Tooltip>
+                    <Tooltip
+                      onClick={() => setMakingHost(memberEmail)}
+                      tip="Make host"
+                    >
                       📢
-                    </ClickableIcon>
+                    </Tooltip>
                   </Row>
                 );
               }
               if (memberIsMe) {
-                return <Pointer>👉</Pointer>;
+                return (
+                  <Tooltip tip="you">
+                    <Pointer>👉</Pointer>
+                  </Tooltip>
+                );
               }
-              return <Text>👤</Text>;
+              return <Tooltip tip="team member">👤</Tooltip>;
             };
 
             const renderVote = () => {
               const canViewVote = memberIsMe || room?.reveal || allVoted;
               const voted = Boolean(lastVote);
               if (voted) {
-                if (canViewVote) return lastVote;
-                return "✅";
+                if (canViewVote) {
+                  if (lastVote === "skip") {
+                    return <Tooltip tip="skipped">⏭️</Tooltip>;
+                  }
+                  return lastVote;
+                }
+                return <Tooltip tip="voted">✅</Tooltip>;
               }
-              return "⏳";
+              return <Tooltip tip="thinking">⏳</Tooltip>;
             };
 
             return (

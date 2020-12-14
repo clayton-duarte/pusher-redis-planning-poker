@@ -2,7 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import { NextPage } from "next";
 
-import LoadingPage from "../components/LoadingPage";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import Button from "../components/Button";

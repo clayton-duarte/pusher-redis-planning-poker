@@ -35,7 +35,7 @@ const RoomPage: NextPage = () => {
       <Main room>
         <Wrapper>
           <Text primary caps>
-            {isHost ? <span>📢</span> : <span>🧑‍💻</span>} Hello {user?.name}!
+            {isHost ? "📢" : "🧑‍💻"} Hello {user?.name}!
           </Text>
           <Text primary>🗳️ Round: {room?.rounds?.length + 1}</Text>
         </Wrapper>

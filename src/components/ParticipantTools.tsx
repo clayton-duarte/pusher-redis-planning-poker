@@ -5,6 +5,7 @@ import { findClosestEstimate, isReadyToEstimate } from "../helpers";
 import { useRoom } from "../providers/room";
 import { useUser } from "../providers/user";
 import { points } from "../enums";
+import Tooltip from "./Tooltip";
 import Button from "./Button";
 import Text from "./Text";
 import Row from "./Row";
@@ -72,7 +73,7 @@ const CardEmpty = styled.span<{ disabled: boolean }>`
 `;
 
 const StyledRow = styled(Row)`
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
 `;
 
 const ParticipantTools: FunctionComponent = () => {
@@ -87,7 +88,7 @@ const ParticipantTools: FunctionComponent = () => {
   const showEstimate = isReadyToEstimate(room);
   const estimate = findClosestEstimate(room);
 
-  const handleClick = (point: Points) => (e: MouseEvent) => {
+  const handleClickVote = (point: Points) => (e: MouseEvent) => {
     e.preventDefault();
     sendVote(point);
   };
@@ -104,9 +105,12 @@ const ParticipantTools: FunctionComponent = () => {
     <>
       <StyledRow>
         <Text>ℹ️ {renderMessage()}</Text>
-        <Button secondary onClick={leaveRoom}>
-          🚪 leave room
-        </Button>
+        <Tooltip tip="skip round" onClick={() => sendVote("skip")}>
+          ⏭️
+        </Tooltip>
+        <Tooltip tip="leave room" onClick={leaveRoom}>
+          🚪
+        </Tooltip>
       </StyledRow>
       {showEstimate ? (
         <Text alert="success">
@@ -118,7 +122,7 @@ const ParticipantTools: FunctionComponent = () => {
           {points.map((point, index) => (
             <Card key={point + index}>
               <CardFilled
-                onClick={handleClick(point)}
+                onClick={handleClickVote(point)}
                 disabled={alreadyVoted}
                 key={`card-${point}`}
               >

@@ -22,7 +22,18 @@ declare module "next" {
 }
 
 declare global {
-  type Points = "0" | "1" | "2" | "3" | "5" | "8" | "13" | "20" | "40" | "100";
+  type Points =
+    | "0"
+    | "1"
+    | "2"
+    | "3"
+    | "5"
+    | "8"
+    | "13"
+    | "20"
+    | "40"
+    | "100"
+    | "skip";
 
   export interface User {
     lastVote?: Points;

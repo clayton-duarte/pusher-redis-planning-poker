@@ -27,7 +27,7 @@ export const isReadyToEstimate = (room: Room): boolean => {
 
 export const findClosestEstimate = (room: Room): Points => {
   const votingMembers = room?.members?.filter(
-    ({ lastVote }) => lastVote != null
+    ({ lastVote }) => lastVote != null && lastVote !== "skip"
   );
 
   const total = votingMembers?.reduce(
