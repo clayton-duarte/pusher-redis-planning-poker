@@ -21,18 +21,24 @@ const Overlay = styled.aside<{ open: boolean }>`
   top: 0;
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ open: boolean }>`
+  transform: scale(${(props) => (props.open ? 1 : 0)});
   background: ${(props) => props.theme.bg};
   border-radius: 0.25rem;
+  transition: 0.25s ease;
   padding: 1rem;
   display: grid;
+  margin: 1rem;
   gap: 1rem;
+  @media (min-width: 768px) {
+    max-width: 50vw;
+  }
 `;
 
 const Modal: FunctionComponent<ModalProps> = ({ onCancel, open, children }) => {
   return (
     <Overlay open={open} onClick={onCancel} role="button">
-      <Wrapper>{children}</Wrapper>
+      <Wrapper open={open}>{children}</Wrapper>
     </Overlay>
   );
 };

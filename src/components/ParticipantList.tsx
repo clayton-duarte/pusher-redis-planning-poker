@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEvent, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import styled from "@emotion/styled";
 
 import { allParticipantsVoted, getOnlyParticipants } from "../helpers";
@@ -46,7 +46,7 @@ const Pointer = styled.div`
   display: inline-block;
 `;
 
-const Kicker = styled(Text)`
+const ClickableIcon = styled(Text)`
   cursor: pointer;
 `;
 
@@ -56,7 +56,8 @@ const Vote = styled(Text)`
 
 const ParticipantList: FunctionComponent = () => {
   const [kickingMember, setKickingMember] = useState<string>();
-  const { room, kickMember } = useRoom();
+  const { room, kickMember, makeMemberHost } = useRoom();
+  const [makingHost, setMakingHost] = useState<string>();
   const { user } = useUser();
 
   const userIsHost = user?.email === room?.host?.email;
@@ -73,58 +74,61 @@ const ParticipantList: FunctionComponent = () => {
     );
   }
 
-  const handleKickMember = (memberEmail) => (e: MouseEvent) => {
-    setKickingMember(memberEmail);
-  };
-
-  const handleConfirmKickMember = () => {
-    kickMember(kickingMember);
-    setKickingMember(undefined);
-  };
-
-  const handleCancelKickMember = () => {
-    setKickingMember(undefined);
-  };
-
   return (
-    <List>
-      {onlyParticipants.map(
-        ({ name: memberName, email: memberEmail, lastVote }) => {
-          const memberIsMe = memberEmail === user?.email;
+    <>
+      <List>
+        {onlyParticipants.map(
+          ({ name: memberName, email: memberEmail, lastVote }) => {
+            const memberIsMe = memberEmail === user?.email;
 
-          const renderIcon = () => {
-            if (userIsHost) {
-              return (
-                <Kicker onClick={handleKickMember(memberEmail)}>🦶</Kicker>
-              );
-            }
-            if (memberIsMe) {
-              return <Pointer>👉</Pointer>;
-            }
-            return <Text>👤</Text>;
-          };
+            const renderIcon = () => {
+              if (userIsHost) {
+                return (
+                  <Row cols={2}>
+                    <ClickableIcon
+                      onClick={() => setKickingMember(memberEmail)}
+                    >
+                      ❌
+                    </ClickableIcon>
+                    <ClickableIcon onClick={() => setMakingHost(memberEmail)}>
+                      📢
+                    </ClickableIcon>
+                  </Row>
+                );
+              }
+              if (memberIsMe) {
+                return <Pointer>👉</Pointer>;
+              }
+              return <Text>👤</Text>;
+            };
 
-          const renderVote = () => {
-            const canViewVote = memberIsMe || room?.reveal || allVoted;
-            const voted = Boolean(lastVote);
-            if (voted) {
-              if (canViewVote) return lastVote;
-              return "✅";
-            }
-            return "⏳";
-          };
+            const renderVote = () => {
+              const canViewVote = memberIsMe || room?.reveal || allVoted;
+              const voted = Boolean(lastVote);
+              if (voted) {
+                if (canViewVote) return lastVote;
+                return "✅";
+              }
+              return "⏳";
+            };
 
-          return (
-            <ListItem key={memberEmail}>
-              {renderIcon()}
-              <Text caps>{memberName}</Text>
-              <Vote>{renderVote()}</Vote>
-            </ListItem>
-          );
-        }
-      )}
-      <Modal open={Boolean(kickingMember)} onCancel={handleCancelKickMember}>
-        <Text primary>Are you sure?</Text>
+            return (
+              <ListItem key={memberEmail}>
+                {renderIcon()}
+                <Text caps>{memberName}</Text>
+                <Vote>{renderVote()}</Vote>
+              </ListItem>
+            );
+          }
+        )}
+      </List>
+
+      {/* KICK MEMBER MODAL */}
+      <Modal
+        open={Boolean(kickingMember)}
+        onCancel={() => setKickingMember(undefined)}
+      >
+        <Text primary>Are you sure you want to remove this user?</Text>
         <Text>
           This action will try to remove the user from this room.
           <br />
@@ -133,13 +137,48 @@ const ParticipantList: FunctionComponent = () => {
           Online users will join the room again automatically.
         </Text>
         <Row cols={2}>
-          <Button onClick={handleCancelKickMember} secondary>
+          <Button onClick={() => setKickingMember(undefined)} secondary>
             cancel
           </Button>
-          <Button onClick={handleConfirmKickMember}>confirm</Button>
+          <Button
+            onClick={() => {
+              setKickingMember(undefined);
+              kickMember(makingHost);
+            }}
+          >
+            confirm
+          </Button>
         </Row>
       </Modal>
-    </List>
+
+      {/* SETTING HOST MODAL*/}
+      <Modal
+        open={Boolean(makingHost)}
+        onCancel={() => setMakingHost(undefined)}
+      >
+        <Text primary>
+          Are you sure you want to make this user the new host?
+        </Text>
+        <Text>
+          This action will make this user the new host of this room.
+          <br />
+          As a consequence, you won't be able to manage that room anymore.
+        </Text>
+        <Row cols={2}>
+          <Button onClick={() => setMakingHost(undefined)} secondary>
+            cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setMakingHost(undefined);
+              makeMemberHost(makingHost);
+            }}
+          >
+            confirm
+          </Button>
+        </Row>
+      </Modal>
+    </>
   );
 };
 

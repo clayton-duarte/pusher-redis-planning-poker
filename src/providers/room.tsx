@@ -115,8 +115,19 @@ export const useRoom = () => {
     await putRoom(newRoom);
   };
 
+  const makeMemberHost = async (memberEmail: string) => {
+    const newHost = room.members.find(({ email }) => email === memberEmail);
+
+    const newRoom: Room = {
+      ...room,
+      host: newHost,
+    };
+    await putRoom(newRoom);
+  };
+
   return {
     toggleViewVotes,
+    makeMemberHost,
     resetRound,
     createRoom,
     acceptVote,

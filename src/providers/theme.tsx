@@ -32,6 +32,9 @@ const Provider: FunctionComponent = ({ children }) => {
               font-family: "Montserrat", sans-serif;
               box-sizing: border-box;
             }
+            @media (max-width: 768px) {
+              font-size: calc(0.75 * ${theme.size});
+            }
           }
         `}
       />
